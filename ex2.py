@@ -14,8 +14,8 @@ import psycopg2
 import math
 from matplotlib.animation import FuncAnimation
 def animate(i):
-    scat.set_offsets([taxis_x[20000333],taxis_y[20000333]])
-    scat.set_offsets([taxis_x[20012018],taxis_y[20012018]])
+    scat.set_offsets(taxis_x[20000333][i],taxis_y[20000333][i])
+    scat.set_offsets(taxis_x[20012018][i],taxis_y[20012018][i])
 
 def linestring_to_points(line_string):
     xs, ys = [],[]
@@ -60,7 +60,6 @@ for i in range(ts_i,ts_f,10):
 		x = float(x)
 		taxis_x[int(row2[0])][int((i-ts_i)/10)] = x    
 		taxis_y[int(row2[0])][int((i-ts_i)/10)] = y
-
 
 print(taxis_x)
 scat = ax.scatter(taxis_x[20000333],taxis_y[20000333],s=10)
