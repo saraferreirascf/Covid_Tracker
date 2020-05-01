@@ -49,8 +49,11 @@ def get_tracks(conn, taxi):
     cursor_psql.execute("select proj_track from tracks where taxi='"+str(taxi)+"';")
     track = cursor_psql.fetchall()
     return track
-'''
-def infected(taxi,conn):
+
+def infected_area(taxi, coord_x, coord_y,conn):
     cursor_psql = conn.cursor()
-    cursor_psql.execute("select taxi from tracks where 
-'''
+    cursor_psql.execute("select taxi from tracks where \
+        st_point_inside_circle('"+str(taxi)+"', \
+        st_x('"+str(coord_x)+"'), st_y('"+str(coord_y)+"'), 50)")
+    area = cursor_psql.fetchall()
+    return area
