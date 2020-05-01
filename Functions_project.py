@@ -57,3 +57,5 @@ def infected_area(taxi, coord_x, coord_y,conn):
         st_x('"+str(coord_x)+"'), st_y('"+str(coord_y)+"'), 50)")
     area = cursor_psql.fetchall()
     return area
+
+#ainda nao testei porque ainda nao consegui aceder às coordenadas
