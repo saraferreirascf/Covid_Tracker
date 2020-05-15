@@ -46,7 +46,7 @@ def get_taxis(conn):
 
 def get_tracks(conn, taxi):
     cursor_psql = conn.cursor()
-    cursor_psql.execute("select proj_track from tracks where taxi='"+str(taxi)+"';")
+    cursor_psql.execute("select st_astext(proj_track) from tracks where taxi='"+str(taxi)+"';")
     track = cursor_psql.fetchall()
     return track
 
@@ -59,3 +59,10 @@ def infected_area(taxi, coord_x, coord_y,conn):
     return area
 
 #ainda nao testei porque ainda nao consegui aceder às coordenadas
+
+def infected(x,y,conn):
+    cursor_psql = conn.cursor()
+    cursor_psql.execute("select proj_location from tracks \
+        where st_distance(point("+str(x)+","+str(y)+"), proj_location) <= 50")
+
+
