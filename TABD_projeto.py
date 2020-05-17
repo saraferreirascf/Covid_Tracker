@@ -15,8 +15,10 @@ def animate(i):
     ax.set_title(datetime.datetime.utcfromtimestamp(ts_i+i*10))
     scat.set_offsets(offsets[i])
     scat2.set_offsets(taxi_track_p[i])
-    
-ts_i = 1570665600
+
+ts_i = 1570665700
+ts_f = 1570667000
+
 scale=1/3000000
 conn = psycopg2.connect("dbname=postgres")
 register(conn)
@@ -68,35 +70,25 @@ with open('offsets3.csv', 'r') as csvFile:
         offsets.append(l)
 
 offsets = np.array(offsets)
-
 x,y = [],[]
 for i in offsets[0]:
     x.append(i[0])
     y.append(i[1])
 
+
 taxi_porto = get_infected(conn, 'PORTO')
-taxi_track_p = get_tracks(conn, taxi_porto[0])
-#taxi_lisboa = get_infected(conn, 'LISBOA')
-#taxi_track_l = get_tracks(conn, taxi_lisboa[0])
+taxi_track_p = get_tracks(conn, taxi_porto[0], ts_i, ts_f)
 
-xp, yp, cam = [], [], []
-for row in taxi_track_p:
-    points_string = row[0]
-    points_string = points_string[11:-2]
-    points = points_string.split(',')
-    for point in points:
-        (x,y) = point.split()
-        xp.append(float(x))
-        yp.append(float(y))
-        cam.append(xp)
-        cam.append(yp)
 
-#taxi_track_p = np.array(taxi_track_p)
+xp, yp = [], []
+for i in taxi_track_p[0]:
+    xp.append(i[0])
+    yp.append(i[1])
+
 scat = ax.scatter(x,y,s=2,color='green')
 scat2 = ax.scatter(xp,yp,s=2,color='red')
 
 anim = FuncAnimation(fig, animate, interval=10, frames=len(offsets)-1, repeat = False)
-
 plt.draw()
 plt.show()
 
