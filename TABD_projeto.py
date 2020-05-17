@@ -14,9 +14,9 @@ import random
 def animate(i):
     ax.set_title(datetime.datetime.utcfromtimestamp(ts_i+i*10))
     scat.set_offsets(offsets[i])
-    scat2.set_offsets(taxi_track_p[i])
+    scat2.set_offsets(infeted_offsets[i])
 
-ts_i = 1570665700
+ts_i = 1570665600
 ts_f = 1570667000
 
 scale=1/3000000
@@ -77,13 +77,16 @@ for i in offsets[0]:
 
 
 taxi_porto = get_infected(conn, 'PORTO')
-taxi_track_p = get_tracks(conn, taxi_porto[0], ts_i, ts_f)
-
+infeted_offsets = get_tracks(conn, taxi_porto[0], ts_i, ts_f)
 
 xp, yp = [], []
-for i in taxi_track_p[0]:
+for i in infeted_offsets[0]:
     xp.append(i[0])
     yp.append(i[1])
+
+print(xp)
+print(yp)
+sys.exit()
 
 scat = ax.scatter(x,y,s=2,color='green')
 scat2 = ax.scatter(xp,yp,s=2,color='red')

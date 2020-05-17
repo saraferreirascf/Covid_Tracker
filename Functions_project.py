@@ -35,8 +35,8 @@ def get_taxis(conn):
 
 def get_infected(conn, s):
     cursor_psql = conn.cursor()
-    cursor_psql.execute("select distinct taxi, extract (hour from to_timestamp(ts)) \
-        from cont_aad_caop2018, tracks where state='BUSY' and concelho='"+str(s)+"' order by 2 limit 10;")
+    cursor_psql.execute("select distinct taxi, extract(hour from to_timestamp(ts)) as hora from cont_aad_caop2018, tracks \
+        where st_contains(proj_boundary,proj_track) and  concelho='"+str(s)+"' order by hora asc limit 10;")
     taxis = cursor_psql.fetchall()
     p = []
     for row in taxis:
@@ -54,11 +54,12 @@ def get_tracks(conn, taxi, ts_i, ts_f):
     for row in taxi:
         taxis_x[int(row[0])] = np.zeros(array_size)
         taxis_y[int(row[0])] = np.zeros(array_size)
-    
+
+      
     for i in range(ts_i, ts_f, 10):
         cursor_psql = conn.cursor()
         sql = "select st_pointn(proj_track," + str(i) + "-ts) from tracks \
-            where taxi='BUSY' and ts<" + str(i) + " and ts+st_numpoints(proj_track)>" + str(i)
+            where taxi='"+str(taxi)+"' and state='BUSY' and ts<" + str(i) + " and ts+st_numpoints(proj_track)>" + str(i)
         cursor_psql.execute(sql)
         track = cursor_psql.fetchall()
         for row in track:
