@@ -1,6 +1,8 @@
 import random
 import sys
 import numpy as np
+import matplotlib.pyplot as plt
+
 
 ###########
 # DISPLAY #
@@ -32,6 +34,26 @@ def get_taxis(conn):
     cursor_psql.execute("select taxi from tracks, cont_aad_caop2018 where concelho='PORTO'")
     taxis = cursor_psql.fetchall()
     return taxis
+
+def random_index():
+    return random.randint(0,1660)
+
+def get_coords_infect(index, offsets):
+    for i in offsets:
+        j = 0
+        while j < 8640:
+            coords.append(offsets[j][index])
+            j += 1
+    return coords
+    
+def infect_taxis(x,y,conn):
+    cursor_psql = conn.cursor()
+    cursor_psql.execute("select st_x() from tracks \
+        where st_distance(point("+str(x)+","+str(y)+"), proj_location) <= 50") 
+
+#FUNCOES INUTEIS |
+#                V
+
 
 def get_infected(conn, s):
     cursor_psql = conn.cursor()
@@ -82,13 +104,4 @@ def infected_area(taxi, coord_x, coord_y,conn):
         st_x('"+str(coord_x)+"'), st_y('"+str(coord_y)+"'), 50)")
     area = cursor_psql.fetchall()
     return area
-
-#ainda nao testei porque ainda nao consegui aceder às coordenadas
-def infected(x,y,conn):
-    cursor_psql = conn.cursor()
-    cursor_psql.execute("select proj_location from tracks \
-        where st_distance(point("+str(x)+","+str(y)+"), proj_location) <= 50")
-
-def random_index():
-    return random.randint(0,1660)
-    
+  
