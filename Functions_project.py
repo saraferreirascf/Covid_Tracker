@@ -58,8 +58,8 @@ def get_tracks(conn, taxi, ts_i, ts_f):
       
     for i in range(ts_i, ts_f, 10):
         cursor_psql = conn.cursor()
-        sql = "select st_pointn(proj_track," + str(i) + "-ts) from tracks \
-            where taxi='"+str(taxi)+"' and state='BUSY' and ts<" + str(i) + " and ts+st_numpoints(proj_track)>" + str(i)
+        sql = "select taxi,st_pointn(proj_track," + str(i) + "-ts) \
+            from tracks where ts<" + str(i) + " and ts+st_numpoints(proj_track)>" + str(i)
         cursor_psql.execute(sql)
         track = cursor_psql.fetchall()
         for row in track:
@@ -89,4 +89,6 @@ def infected(x,y,conn):
     cursor_psql.execute("select proj_location from tracks \
         where st_distance(point("+str(x)+","+str(y)+"), proj_location) <= 50")
 
-
+def random_index():
+    return random.randint(0,1660)
+    
