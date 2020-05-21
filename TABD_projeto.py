@@ -84,33 +84,27 @@ index = random_index() #gera o primeiro taxi infetado
 taxis_inf.append(index) #vetor com os indices dos taxis infetados
 
 print(index)
-print(offsets[0][index])
 
 j = 0
 k = 0
-while k<1660: # precorre os taxis
-    while j<8460: #precorre o tempo
+for k in range(0,1659): # precorre os taxis
+    for j in range(0, 8640, 10): #precorre o tempo
         c = offsets[j][index] #coordenadas do taxi infetado no tempo j
-        #circle = plt.Circle((c[0],c[1]), radius= 50)
         for i in offsets[j]: #precorre os offsets
-            dx = abs(i[0]-c[0])
-            dy = abs(i[1]-c[1])
-            r = 50
-            dxx = dx*dx
-            dyy = dy*dy
-            rr = r*r
-            if dxx+dyy <= r:
-                taxis_inf.append(k)
-        j += 10
-    k += 1
-
-print(len(taxis_inf))
+            if (c[0] != 0.0 and c[1] != 0.0): #para garantir que nao estao no ponto 0.0
+                inside = isInside(c[0], c[1], 50, i[0], i[1])
+                if inside == True:
+                    taxis_inf.append(k)
 
 for i in range(0,1659):
     if i in taxis_inf:
+        print("i=", i)
         inf_color.append('red')
     else:
         inf_color.append('green')
+
+print(inf_color)
+sys.exit()
 
 scat = ax.scatter(x,y,s=2)
 
