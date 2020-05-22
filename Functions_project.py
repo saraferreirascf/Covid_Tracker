@@ -41,6 +41,13 @@ def isInside(circle_x, circle_y, rad, x, y):
     else: 
         return False;
 
+def prob_inf():
+    prob = random.randint(0,100)
+    if prob < 10:
+        return True
+    else:
+        return False
+
 #FUNCOES QUE NAO ESTAO A SER USADAS |
 #                                   V
 

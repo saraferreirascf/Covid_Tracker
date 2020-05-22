@@ -85,16 +85,18 @@ taxis_inf.append(index) #vetor com os indices dos taxis infetados
 
 print(index)
 
-j = 0
-k = 0
 for k in range(0,1659): # precorre os taxis
+    print(k)
     for j in range(0, 8640, 10): #precorre o tempo
         c = offsets[j][index] #coordenadas do taxi infetado no tempo j
         for i in offsets[j]: #precorre os offsets
             if (c[0] != 0.0 and c[1] != 0.0): #para garantir que nao estao no ponto 0.0
                 inside = isInside(c[0], c[1], 50, i[0], i[1])
-                if inside == True:
+                prob = prob_inf()
+                if (inside == True) and (prob == True) and (k not in taxis_inf):
                     taxis_inf.append(k)
+                    print(taxis_inf)
+       
 
 for i in range(0,1659):
     if i in taxis_inf:
@@ -103,12 +105,7 @@ for i in range(0,1659):
     else:
         inf_color.append('green')
 
-print(inf_color)
-sys.exit()
-
 scat = ax.scatter(x,y,s=2)
-
 anim = FuncAnimation(fig, animate, interval=10, frames=len(offsets)-1, repeat = False)
 plt.draw()
 plt.show()
-
