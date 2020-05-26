@@ -37,9 +37,9 @@ def random_index():
 def isInside(circle_x, circle_y, rad, x, y): 
     if ((x - circle_x) * (x - circle_x) + 
         (y - circle_y) * (y - circle_y) <= rad * rad): 
-        return True; 
+        return True
     else: 
-        return False;
+        return False
 
 def prob_inf():
     prob = random.randint(0,100)
@@ -47,6 +47,9 @@ def prob_inf():
         return True
     else:
         return False
+
+
+
 
 #FUNCOES QUE NAO ESTAO A SER USADAS |
 #                                   V
