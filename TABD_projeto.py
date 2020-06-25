@@ -1,4 +1,4 @@
-import numpy as np
+import numpy as np; np.random.seed(32)
 import matplotlib.pyplot as plt
 import psycopg2
 import math
@@ -10,13 +10,9 @@ from postgis.psycopg import register
 from Functions_project import *
 import sys
 import random
-
-def animate(i):
-    ax.set_title(datetime.datetime.utcfromtimestamp(ts_i+i*10))
-    sizes = np.random.randint(50,size=1660) #infe 
-    #colors = np.random.random(size=(1660,3))
-    scat.set_facecolors(inf_color)
-    scat.set_offsets(offsets[i]) 
+from matplotlib.path import Path
+from matplotlib.textpath import TextToPath
+from matplotlib.font_manager import FontProperties
 
 ts_i = 1570665600
 ts_f = 1570667000
@@ -85,8 +81,8 @@ taxis_inf.append(index) #vetor com os indices dos taxis infetados
 
 print(index)
 
-for j in range(0, 8640, 10): #precorre o tempo
-    print(j)
+for j in range(0, 8000, 10): #precorre o tempo
+    #print(j)
     for k in range(0,1659,1):
         c= offsets[j][index] #coordenadas do taxi infetado no tempo j
         for i in offsets[j]: #precorre os offsets
@@ -109,9 +105,34 @@ for i in range(0,1659):
         inf_color.append('red')
     else:
         inf_color.append('green')
+
 '''
 
-scat = ax.scatter(x,y,s=2)
-anim = FuncAnimation(fig, animate, interval=10, frames=len(offsets)-1, repeat = False)
+def animate(i):
+    ax.set_title(datetime.datetime.utcfromtimestamp(ts_i+i*10))
+    #sizes = np.random.randint(50,size=1660) #infe 
+    #colors = np.random.random(size=(1660,3))
+    scat.set_facecolors(inf_color)
+    #print(offsets[i])
+    #scat.set_offsets(offsets[i]) 
+    scat.set_array(offsets[i])
+    return scat
+
+
+fp = FontProperties(fname=r"./Font Awesome 5 Free-Solid-900.otf")
+
+symbols = dict(taxi = "\uf1ba",car_side= "\uf5e4")
+
+def get_marker(symbol):
+    v, codes = TextToPath().get_text_path(fp, symbol)
+    v = np.array(v)
+    mean = np.mean([np.max(v,axis=0), np.min(v, axis=0)], axis=0)
+    return Path(v-mean, codes, closed=False)
+
+
+#scat = ax.scatter(x,y,s=2,marker=get_marker(symbols["car_side"]))
+#scat = ax.scatter(x,y,s=2)
+scat=ax.scatter(offsets[0][index][0],offsets[0][index][1],s=80,c="red",marker=get_marker(symbols["car_side"]),edgecolors="none", linewidth=1)
+anim = FuncAnimation(fig, animate, interval=30, frames=len(offsets)-1, repeat = False)
 plt.draw()
 plt.show()
