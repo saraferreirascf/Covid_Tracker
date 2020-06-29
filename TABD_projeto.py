@@ -73,52 +73,46 @@ for i in offsets[0]:
     x.append(i[0])
     y.append(i[1])
 
-inf_color= []
-taxis_inf = []
-
-index = random_index() #gera o primeiro taxi infetado
-taxis_inf.append(index) #vetor com os indices dos taxis infetados
-
-print(index)
-
-for j in range(0, 8000, 10): #precorre o tempo
-    #print(j)
-    for k in range(0,1659,1):
-        c= offsets[j][index] #coordenadas do taxi infetado no tempo j
-        for i in offsets[j]: #precorre os offsets
-            if (c[0] != 0.0 and c[1] != 0.0): #para garantir que nao estao no ponto 0.0
-                inside = isInside(c[0], c[1], 50, i[0], i[1])
-                if inside == True:
-                    prob = prob_inf()
-                    if (prob == True) and ( k not in taxis_inf):
-                        taxis_inf.append(k)
-                        inf_color.append('red')
-                    else:
-                        inf_color.append('green')
-
-
-                        
-'''
-for i in range(0,1659):
-    if i in taxis_inf:
-        print("i=", i)
-        inf_color.append('red')
-    else:
-        inf_color.append('green')
-
-'''
-
 def animate(i):
     ax.set_title(datetime.datetime.utcfromtimestamp(ts_i+i*10))
-    #sizes = np.random.randint(50,size=1660) #infe 
-    #colors = np.random.random(size=(1660,3))
-    scat.set_facecolors(inf_color)
-    #print(offsets[i])
-    #scat.set_offsets(offsets[i]) 
-    scat.set_array(offsets[i])
+    scat.set_facecolors(colors)
+    scat.set_offsets(offsets[i])
     return scat
 
+#main#
 
+taxis_left = np.arange(1660) #taxis nao infetados
+taxis_infected = [] #taxis infetados
+colors = [] #cores
+sizes = [] #tamanhos
+s = 0
+
+p = random_index() #taxi aleatoriamente escolhido
+
+for c in range(0,1660,1):
+    colors.append('green')
+
+for s in range(0,1660,1):
+    sizes.append(0)
+
+#atualizar os arrays
+
+taxis_left = taxis_left[taxis_left != p]
+taxis_infected.append(p)
+colors.insert(p,'red')
+
+
+for time in range(0, 8640, 10):
+    print(time)
+    for taxis in taxis_infected:
+        for t in taxis_left:
+            prob = prob_inf()
+            if prob == True:
+                taxis_infected.append(t)
+                taxis_left = taxis_left[taxis_left != t]
+                colors.insert(t,'red')
+
+#taxi marker
 fp = FontProperties(fname=r"./Font Awesome 5 Free-Solid-900.otf")
 
 symbols = dict(taxi = "\uf1ba",car_side= "\uf5e4")
@@ -128,11 +122,8 @@ def get_marker(symbol):
     v = np.array(v)
     mean = np.mean([np.max(v,axis=0), np.min(v, axis=0)], axis=0)
     return Path(v-mean, codes, closed=False)
-
-
-#scat = ax.scatter(x,y,s=2,marker=get_marker(symbols["car_side"]))
-#scat = ax.scatter(x,y,s=2)
-scat=ax.scatter(offsets[0][index][0],offsets[0][index][1],s=80,c="red",marker=get_marker(symbols["car_side"]),edgecolors="none", linewidth=1)
+        
+scat = ax.scatter(offsets[0][p][0],offsets[0][p][1],s=80,c="red",marker=get_marker(symbols["car_side"]),edgecolors="none", linewidth=1)
 anim = FuncAnimation(fig, animate, interval=30, frames=len(offsets)-1, repeat = False)
 plt.draw()
 plt.show()

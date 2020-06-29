@@ -1,7 +1,20 @@
-import random
-import sys
-import numpy as np
+import numpy as np; np.random.seed(32)
 import matplotlib.pyplot as plt
+import psycopg2
+import math
+from matplotlib.animation import FuncAnimation
+import datetime
+import csv
+from postgis import Polygon,MultiPolygon
+from postgis.psycopg import register
+from Functions_project import *
+import sys
+import random
+from matplotlib.path import Path
+from matplotlib.textpath import TextToPath
+from matplotlib.font_manager import FontProperties
+from matplotlib import style
+
 
 
 ###########
@@ -48,80 +61,36 @@ def prob_inf():
     else:
         return False
 
+def infected(offsets, index):
+    print("taxi a infetar = ", index)
+    inf_color = []
+    taxis_inf = []
+    all_t = []
+    for j in range(0, 500, 10): #precorre o tempo
+        print(j)
+        for k in range(0,1659,1):
+            c= offsets[j][index] #coordenadas do taxi infetado no tempo j
+            for i in offsets[j]: #precorre os offsets
+                if (c[0] != 0.0 and c[1] != 0.0): #para garantir que nao estao no ponto 0.0
+                    inside = isInside(c[0], c[1], 50, i[0], i[1])
+                    if inside == True:
+                        prob = prob_inf()
+                        if (prob == True) and ( k not in taxis_inf):
+                            taxis_inf.append(k)
+                            inf_color.append('red')
+                        else:
+                            inf_color.append('green')
+    t = len(taxis_inf)
+    all_t.append(t)
+    return taxis_inf, inf_color, all_t
 
-
-
-#FUNCOES QUE NAO ESTAO A SER USADAS |
-#                                   V
-
-def get_coords_infect(index, offsets):
-    for i in offsets:
-        j = 0
-        while j < 8640:
-            coords.append(offsets[j][index])
-            j += 1
-    return coords
-
-def get_taxis(conn):
-    cursor_psql = conn.cursor()
-    cursor_psql.execute("select taxi from tracks, cont_aad_caop2018 where concelho='PORTO'")
-    taxis = cursor_psql.fetchall()
-    return taxis
-
-def infect_taxis(x,y,conn):
-    cursor_psql = conn.cursor()
-    cursor_psql.execute("select st_x() from tracks \
-        where st_distance(point("+str(x)+","+str(y)+"), proj_location) <= 50") 
-
-def get_infected(conn, s):
-    cursor_psql = conn.cursor()
-    cursor_psql.execute("select distinct taxi, extract(hour from to_timestamp(ts)) as hora from cont_aad_caop2018, tracks \
-        where st_contains(proj_boundary,proj_track) and  concelho='"+str(s)+"' order by hora asc limit 10;")
-    taxis = cursor_psql.fetchall()
-    p = []
-    for row in taxis:
-        points = row[0].split(',')
-        p.append(points)
-    first_point = random.choice(p)
-    return first_point
-
-def get_tracks(conn, taxi, ts_i, ts_f):
-    taxis_x = {}
-    taxis_y = {}
-    step = 10
-    array_size = int(24*60*60/step)
-    
-    for row in taxi:
-        taxis_x[int(row[0])] = np.zeros(array_size)
-        taxis_y[int(row[0])] = np.zeros(array_size)
-
-      
-    for i in range(ts_i, ts_f, 10):
-        cursor_psql = conn.cursor()
-        sql = "select taxi,st_pointn(proj_track," + str(i) + "-ts) \
-            from tracks where ts<" + str(i) + " and ts+st_numpoints(proj_track)>" + str(i)
-        cursor_psql.execute(sql)
-        track = cursor_psql.fetchall()
-        for row in track:
-            x,y = row[2].coords
-            taxis_x[int(row[0])][int((i-ts_i)/10)] = x
-            taxis_y[int(row[0])][int((i-ts_i)/10)] = y
-
-    track_offset = []
-    for i in range(array_size):
-        l = []
-        for j in taxis_x:
-            l.append([taxis_x[j][i],taxis_y[j][i]])
-            track_offset.append(l)
-    return track_offset
-
-def infected_area(taxi, coord_x, coord_y,conn):
-    cursor_psql = conn.cursor()
-    cursor_psql.execute("select taxi from tracks where \
-        st_point_inside_circle('"+str(taxi)+"', \
-        st_x('"+str(coord_x)+"'), st_y('"+str(coord_y)+"'), 50)")
-    area = cursor_psql.fetchall()
-    return area
-
-
-  
+def bar_chart(barss, sizes):
+    height = sizes
+    bars = barss
+    y_pos = np.arange(len(bars)) 
+    # Create bars
+    plt.bar(y_pos, height)
+    # Create names on the x-axis
+    plt.xticks(y_pos, bars)
+    # Show graphic
+    plt.show()
