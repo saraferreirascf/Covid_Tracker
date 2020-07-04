@@ -46,6 +46,7 @@ def linestring_to_points(line_string):
 def random_index():
     return random.randint(0,1660)
 
+
 #ver os taxis que estao dentro do circulo de infecao
 def isInside(circle_x, circle_y, rad, x, y): 
     if ((x - circle_x) * (x - circle_x) + 
