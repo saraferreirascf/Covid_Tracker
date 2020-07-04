@@ -15,6 +15,12 @@ from matplotlib.textpath import TextToPath
 from matplotlib.font_manager import FontProperties
 import seaborn as sb
 
+<<<<<<< HEAD
+=======
+# library and dataset
+import seaborn as sns
+
+>>>>>>> b97fdb992bdd18c26ced1ad9323e40b2fe46c3ee
 ts_i = 1570665600  #timestamp inicial
 ts_f = 1570667000
 
@@ -143,7 +149,11 @@ colors.insert(p,'red')
 taxis_infected_time.insert(0, 1)
 taxis_left_time.insert(0, 1659)
 
+<<<<<<< HEAD
 for time in range(0, 4000, 1):
+=======
+for time in range(0, 1000, 1):
+>>>>>>> b97fdb992bdd18c26ced1ad9323e40b2fe46c3ee
     print(time)
     for taxis in taxis_infected: #condicao para fazer o grafico
         temp1=len(taxis_left)
@@ -167,6 +177,11 @@ for time in range(0, 4000, 1):
         taxis_left_time.insert(time, len(taxis_left))
         taxis_infected_time.insert(time, len(taxis_infected))
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> b97fdb992bdd18c26ced1ad9323e40b2fe46c3ee
 #Gráfico de barras
 bar_plot=plt.figure()
 bar_plot.suptitle("Infected Taxis vs NOT Infected Taxis",**font)
@@ -181,6 +196,7 @@ plt.yticks(y_pos, bars)
         
 anim_bar = FuncAnimation(bar_plot, bar_animate, interval=30, frames=len(offsets)-1, repeat = False)
 
+<<<<<<< HEAD
 #Outro gráfico
 graph=plt.figure()
 plt.title("Evolution of infection")
@@ -205,7 +221,18 @@ heat_map = sb.heatmap(data, cmap="Greens")
 heat_map.set_yticklabels(heat_map.get_yticklabels(), rotation=0)
 ax=plt.gca()
 ax.set_xlim(0, 8640)
+=======
+
+#Outro gráfico
+graph=plt.figure()
+plt.plot(taxis_left, color="red", label="infected") 
+plt.legend(loc='best')
+>>>>>>> b97fdb992bdd18c26ced1ad9323e40b2fe46c3ee
 
 plt.draw()
 plt.show()
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> b97fdb992bdd18c26ced1ad9323e40b2fe46c3ee
